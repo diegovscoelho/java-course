@@ -1,12 +1,14 @@
 package application;
 
 import entities.Product;
-import util.PriceUpdate;
+import util.UpperCaseName;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -21,12 +23,11 @@ public class Main {
         list.add(new Product("HD Case", 80.90));
         list.add(new Product("Mouse", 49.90));
 
-        double factor = 1.1;
+        Function<Product, String> func = p -> p.getName().toUpperCase();
 
-        Consumer<Product> cons = p -> p.setPrice(p.getPrice() * factor);
+        List<String> names = list.stream().map(func).collect(Collectors.toList());
 
-        list.forEach(cons);
-        list.forEach(System.out::println);
+        names.forEach(System.out::println);
     }
 
 }
