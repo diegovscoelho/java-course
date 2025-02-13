@@ -1,6 +1,7 @@
 package application;
 
 import entities.Product;
+import model.services.ProductService;
 import util.UpperCaseName;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ public class Main {
         list.add(new Product("HD Case", 80.90));
         list.add(new Product("Mouse", 49.90));
 
-        Function<Product, String> func = p -> p.getName().toUpperCase();
+        ProductService ps = new ProductService();
 
-        List<String> names = list.stream().map(func).collect(Collectors.toList());
+        double sum = ps.filteredSum(list, p -> p.getName().charAt(0) == 'T');
 
-        names.forEach(System.out::println);
+        System.out.println("Filtered sum: " + String.format("%.2f", sum));
     }
 
 }
