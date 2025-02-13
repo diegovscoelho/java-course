@@ -1,24 +1,42 @@
 package application;
 
-import java.util.Arrays;
-import java.util.List;
+import entities.Product;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
 
-        List<Integer> list = Arrays.asList(1, 3, 7, 10, 9);
+        Locale.setDefault(Locale.US);
+        String path = "C:\\Users\\T-GAMER\\Desktop\\Codes\\Backend\\Sources\\out.txt";
+        List<Product> list = new ArrayList<>();
 
-        Stream<Integer> st1 = list.stream().map(x -> x * 10);
-        System.out.println(Arrays.toString(st1.toArray()));
+        try(BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String regex = ",";
+            String line = br.readLine();
+            while(line != null) {
 
-        Stream<String> st2 = Stream.of("Maria", "Alex", "Bob");
-        System.out.println(Arrays.toString(st2.toArray()));
+                String[] fields = line.split(regex);
 
-        Stream<Integer> st3 = Stream.iterate(0, x -> x + 2);
-        System.out.println(Arrays.toString(st3.limit(10).toArray()));
+                list.add(new Product(fields[0], Double.parseDouble(fields[1])));
 
-        Stream<Long> st4 = Stream.iterate(new Long[] {0L, 1L}, p -> new Long[] {p[1], p[0] + p[1]}).map(p -> p[0]);
-        System.out.println(Arrays.toString(st4.limit(30).toArray()));
+                line = br.readLine();
+            }
+
+            double sum = list.stream().mapToDouble(x -> x.getPrice()).sum();
+            System.out.println("Average price: " + String.format("%.2f", sum / list.size()));
+
+            Comparator<String> comp = (s1, s2) -> s1.toUpperCase().compareTo(s2.toUpperCase());
+
+            List<String> filteredNames = list.stream().filter(p -> p.getPrice() < 420).map(p -> p.getName()).sorted(comp).collect(Collectors.toList());
+            filteredNames.forEach(System.out::println);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
